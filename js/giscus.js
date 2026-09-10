@@ -6,9 +6,9 @@
 
 const DEFAULT_GISCUS_CONFIG = {
   repo: 'beethovenstudios/beethoven-web',
-  repoId: '', // Filled once GitHub repo is created and Giscus app authorized
-  category: 'Announcements',
-  categoryId: '',
+  repoId: 'R_kgDOUVVd3w',
+  category: 'General',
+  categoryId: 'DIC_kwDOUVVd384DFUWY',
   mapping: 'pathname',
   strict: '0',
   reactionsEnabled: '1',
@@ -60,9 +60,10 @@ function renderGiscus(repo, repoId = '', categoryId = '') {
   const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
   const giscusTheme = currentTheme === 'dark' ? 'dark_dimmed' : 'light';
 
-  // If repoId is missing, show helpful configuration reminder with direct launch
-  const effectiveRepoId = repoId || localStorage.getItem('bvn_giscus_repo_id');
-  const effectiveCategoryId = categoryId || localStorage.getItem('bvn_giscus_category_id');
+  // If repo is the default beethoven-web repo, use default configured IDs
+  const isDefaultRepo = repo === DEFAULT_GISCUS_CONFIG.repo;
+  const effectiveRepoId = repoId || localStorage.getItem('bvn_giscus_repo_id') || (isDefaultRepo ? DEFAULT_GISCUS_CONFIG.repoId : '');
+  const effectiveCategoryId = categoryId || localStorage.getItem('bvn_giscus_category_id') || (isDefaultRepo ? DEFAULT_GISCUS_CONFIG.categoryId : '');
 
   if (!effectiveRepoId) {
     if (fallbackGuide) fallbackGuide.style.display = 'block';
