@@ -1,307 +1,310 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Documentation — Beethoven Engine</title>
-  <meta name="description" content="Technical documentation and architectural specifications for Beethoven: a bare-metal C++20 agentic harness for local models." />
-  
+  <title>Documentation — Beethoven</title>
+  <meta name="description" content="Reference for Beethoven: the three-valued split, blueprint checks, symbol slicing, validation adapters, prompt tags, build presets, lint gates and the CLI. Plus the engine's own docs rendered live from the repository." />
   <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg" />
-  <link rel="stylesheet" href="css/style.css" />
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon-180.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="css/site.css" />
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('bvn_theme');
+        if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', t);
+      } catch (e) { document.documentElement.setAttribute('data-theme', 'light'); }
+    })();
+  </script>
 </head>
 <body>
 
-  <!-- Background Lighting -->
-  <div class="ambient-bg">
-    <div class="ambient-glow-1"></div>
-    <div class="ambient-glow-2"></div>
-    <div class="grid-overlay"></div>
-  </div>
-
-  <!-- Navbar -->
-  <nav class="navbar">
-    <div class="container navbar-inner">
-      <a href="index.html" class="nav-brand">
-        <div class="brand-logo-wrap">
-          <img src="assets/icons/favicon.svg" alt="Beethoven Logo" class="brand-logo" />
-        </div>
-        <span>Beethoven</span>
-        <span class="nav-tag-badge">Docs</span>
-      </a>
-
-      <ul class="nav-menu">
-        <li><a href="index.html" class="nav-link">&larr; Back to Home</a></li>
-        <li><a href="index.html#features" class="nav-link">Features</a></li>
-        <li><a href="index.html#architecture" class="nav-link">Architecture</a></li>
-        <li><a href="index.html#quickstart" class="nav-link">Quickstart</a></li>
-        <li><a href="https://github.com/anydaytv/beethoven" target="_blank" rel="noopener" class="nav-link">Source</a></li>
-      </ul>
-
-      <div class="nav-actions">
-        <button class="theme-toggle-btn" aria-label="Toggle theme">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-        </button>
-
-        <a href="https://github.com/anydaytv/beethoven" target="_blank" rel="noopener" class="btn btn-outline btn-sm">
-          <span>GitHub</span>
-        </a>
-      </div>
+<nav class="nav" aria-label="Primary">
+  <div class="wrap nav-inner">
+    <a href="./" class="brand" aria-label="Beethoven home">
+      <span class="word">Beethoven</span>
+      <span class="opus">Docs</span>
+    </a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="./">Home</a></li>
+      <li><a href="#reference">Reference</a></li>
+      <li><a href="#cli">CLI</a></li>
+      <li><a href="#live">From the repository</a></li>
+      <li><a href="#discuss">Discussions</a></li>
+      <li><a class="ext" href="https://github.com/anydaytv/beethoven" target="_blank" rel="noopener">GitHub</a></li>
+    </ul>
+    <div class="nav-tools">
+      <button class="icon-btn theme-toggle" type="button" aria-label="Toggle colour theme"></button>
+      <button class="icon-btn menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-links">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
     </div>
-  </nav>
+  </div>
+</nav>
 
-  <!-- Docs Container -->
-  <div class="container docs-layout">
-    <!-- Docs Sidebar -->
-    <aside class="docs-sidebar">
-      <div class="docs-search">
-        <input type="text" id="docs-search-input" class="docs-search-input" placeholder="Search documentation..." />
-      </div>
+<main class="wrap docs">
+  <aside class="docs-nav" aria-label="Documentation sections">
+    <h4>Reference</h4>
+    <ul>
+      <li><a href="#reference">Overview</a></li>
+      <li><a href="#split">The three-valued split</a></li>
+      <li><a href="#blueprint">Blueprints and checks</a></li>
+      <li><a href="#slicing">Symbol slicing</a></li>
+      <li><a href="#splicing">Parallel splicing</a></li>
+      <li><a href="#validation">Validation adapters</a></li>
+      <li><a href="#prompts">Prompt files and tags</a></li>
+      <li><a href="#memory">Memory</a></li>
+      <li><a href="#voice">Voice</a></li>
+      <li><a href="#serve">Serve and connect</a></li>
+    </ul>
+    <h4>Build</h4>
+    <ul>
+      <li><a href="#build">Toolchain and presets</a></li>
+      <li><a href="#gates">Lint gates</a></li>
+      <li><a href="#cli">CLI</a></li>
+      <li><a href="#layout">Repository layout</a></li>
+    </ul>
+    <h4>Live</h4>
+    <ul>
+      <li><a href="#live">From the repository</a></li>
+      <li><a href="#discuss">Discussions</a></li>
+    </ul>
+  </aside>
 
-      <div class="docs-nav-group">
-        <div class="docs-group-title">Architecture</div>
-        <ul class="docs-nav-list">
-          <li class="docs-nav-item active"><a href="#doc-overview">Overview &amp; Philosophy</a></li>
-          <li class="docs-nav-item"><a href="#doc-problem">The Blind Worker Problem</a></li>
-          <li class="docs-nav-item"><a href="#doc-split">The Three-Valued Split</a></li>
-          <li class="docs-nav-item"><a href="#doc-blueprint">Contract-First Composition</a></li>
-          <li class="docs-nav-item"><a href="#doc-ast">Tree-Sitter AST Resolution</a></li>
-          <li class="docs-nav-item"><a href="#doc-splicer">Parallel Splicing Engine</a></li>
-          <li class="docs-nav-item"><a href="#doc-shadow">Shadow Compiler Validation</a></li>
-          <li class="docs-nav-item"><a href="#doc-memory">Persistent SQLite Memory</a></li>
-        </ul>
-      </div>
+  <article class="docs-body">
+    <p class="eyebrow">Reference · Op. 0.9</p>
+    <h1 id="reference">How Beethoven works.</h1>
+    <p class="muted" style="font-size:1.15rem">
+      This page is the curated reference. Everything on it is checked against the engine repository, and the
+      <a href="#live">live section</a> at the bottom renders the repository’s own documents on load so they cannot drift from the code.
+    </p>
 
-      <div class="docs-nav-group">
-        <div class="docs-group-title">Specification</div>
-        <ul class="docs-nav-list">
-          <li class="docs-nav-item"><a href="#doc-prompts">Prompt &amp; Tag Specification</a></li>
-          <li class="docs-nav-item"><a href="#doc-language-files">Anatomy of a Language File</a></li>
-        </ul>
-      </div>
+    <h2 id="overview">Overview</h2>
+    <p>Beethoven is a C++20 agentic harness for local language models, with a Dear ImGui desktop workbench, an in-process voice pipeline, and an HTTP/WebSocket serve mode. Most agents are Node or Python scripts passing strings to a frontier model. Beethoven is the opposite: a heavy, concurrent engine whose job is to take everything that does not require intelligence away from the model, so that a 7B–31B model on consumer hardware only has to do the part that does.</p>
+    <p>The core loop for a goal:</p>
+    <ol>
+      <li>The <strong>planner</strong> sizes the goal and, for large ones, writes a specification series first.</li>
+      <li>The <strong>orchestrator</strong> emits a JSON blueprint: tasks, files, scopes, dependencies, behaviour.</li>
+      <li>C++ <strong>checks the blueprint’s structure</strong> against the workspace tree and sends findings back, at most three times.</li>
+      <li><strong>Workers</strong> run in parallel waves. Each gets the exact symbol slices it needs and its task’s behaviour verbatim.</li>
+      <li>Every edit is <strong>validated</strong> in a shadow copy by the checker its language declares, and repaired on the worker’s own turn.</li>
+      <li>Edits are <strong>spliced</strong> into the tree with byte-offset tracking, then the project’s own test command runs over the whole tree.</li>
+    </ol>
 
-      <div class="docs-nav-group">
-        <div class="docs-group-title">Build &amp; Quality</div>
-        <ul class="docs-nav-list">
-          <li class="docs-nav-item"><a href="#doc-toolchain">Zero Global Toolchain</a></li>
-          <li class="docs-nav-item"><a href="#doc-presets">CMake Presets Guide</a></li>
-          <li class="docs-nav-item"><a href="#doc-gates">Architectural Lint Gates</a></li>
-        </ul>
-      </div>
+    <h2 id="split">The three-valued split</h2>
+    <p>One rule runs the harness. Three kinds of decision, one owner each.</p>
+    <ul>
+      <li><strong>Structure is C++’s.</strong> Whether a plan can run at all is decided by code from the plan and the tree. No English is read and no model is asked.</li>
+      <li><strong>Meaning is the model’s.</strong> What a goal asks for, what a symbol should do, which file a change belongs in. C++ never overrules that reading with a regex.</li>
+      <li><strong>Facts are gathered by C++ and consumed by the model.</strong> The tree, the outline, the imports, the runner this machine actually has. The harness finds them and puts them in the prompt.</li>
+    </ul>
+    <blockquote>The model spends its tokens deciding, not discovering.</blockquote>
 
-      <div class="docs-nav-group">
-        <div class="docs-group-title">Community &amp; Discussions</div>
-        <ul class="docs-nav-list">
-          <li class="docs-nav-item"><a href="#doc-discussions">Giscus Comments</a></li>
-        </ul>
-      </div>
-    </aside>
+    <h2 id="blueprint">Blueprints and the structure check</h2>
+    <p>The orchestrator emits one task per unit of work. Each task names its target file, its scope (<code>symbol</code>, <code>file</code> or <code>module</code>), its dependencies, and in its own words the behaviour the task must deliver. That behaviour travels with the task and reaches the worker verbatim; there is no shared table of contracts keyed by symbol.</p>
+    <p>C++ checks the plan’s structure against a fixed list. Each line is the exact sentence the planner is shown. Three are refusals: the run stops once the planner has been told and answers with the same finding.</p>
+    <pre><code>task %d names %s, which is not in the project and no task creates it
+task %d recreates %s, which task %d deleted
+the validation command names %s, which is not in the project and no task creates it</code></pre>
+    <p>The rest are facts the planner must account for. It fixes the plan or says why the plan is right, and its answer stands:</p>
+    <pre><code>task %d names symbol %s in %s; %s is where the project defines it today
+task %d writes %s; nothing else in this project has that extension
+tasks %d and %d both change %s in %s in generation %d; the second starts from the first's result -- one task, or say why two
+task %d is in generation %d and depends on task %d in generation %d; a dependency has to finish first
+task %d names %s, which task %d changes in generation %d; task %d runs in generation %d
+task %d edits %s, which goal_files does not list
+task %d changes %s, a test that existed before the run; say why in seed_tests_touched or drop the task
+task %d deletes %s; say in definitions whether its definitions are moved by this plan or removed from the project</code></pre>
+    <p>Tasks that share a file inside one generation run one after another, each from the file as the one before left it. Inside a wave, a task that names a symbol runs after the task that changes it. A finding goes back to the planner in its own words, three asks at most for the whole plan, and a line the planner has not yet seen always earns its own ask.</p>
 
-    <!-- Docs Content -->
-    <main class="docs-content">
-      <div class="docs-header">
-        <h1>Beethoven Engine Reference</h1>
-        <p>Architectural rationale, prompt template grammar, and execution invariants.</p>
-      </div>
+    <h2 id="slicing">Symbol slicing</h2>
+    <p>Beethoven maintains a live Tree-sitter graph of the workspace. When a worker is dispatched to modify a symbol, the engine parses the target file into an AST, extracts the exact byte boundaries of the symbol and of the signatures and dependent headers it uses, and injects those slices verbatim. The worker never sees an entire multi-thousand-line file and never guesses a signature.</p>
+    <p>The <a href="./#see">interactive demo on the home page</a> runs the same Tree-sitter C++ grammar in WebAssembly against one file so you can see the shape of what a worker is handed.</p>
 
-      <!-- Section: Overview -->
-      <section class="docs-section" id="doc-overview">
-        <h2>1. What is Beethoven?</h2>
-        <p>
-          Project Beethoven is a sophisticated, bare-metal AI orchestrator and agentic harness written in C++20.
-        </p>
-        <p>
-          Unlike tools that aim to be "lightweight" Python or Node.js scripts passing strings back and forth, Beethoven takes the opposite approach: it is a heavy-duty, high-performance execution scaffold designed specifically for <strong>local language models (LLMs)</strong> running on consumer hardware (7B to 14B parameters).
-        </p>
-        <div class="callout">
-          <div class="callout-title">Core Philosophy</div>
-          <p>
-            Aggressively offload cognitive burden from the LLM into deterministic C++ code, so the model only has to do the part that actually requires intelligence.
-          </p>
-        </div>
-      </section>
+    <h2 id="splicing">Parallel tasks and safe splicing</h2>
+    <p>Goals are decomposed into isolated tasks that run concurrently on native threads. When several tasks target the same file, those tasks are serialised within the wave while a byte-offset tracker follows the length changes earlier edits produced. Each later patch adjusts its target offsets before splicing, so two workers editing two functions in one file never conflict.</p>
 
-      <!-- Section: Problem -->
-      <section class="docs-section" id="doc-problem">
-        <h2>2. The Core Problem: The Blind Worker</h2>
-        <p>
-          First-generation AI coding agents are heavily optimized for frontier cloud models (GPT-4, Claude 3.5 Sonnet). When pointed at a 12B model running on local hardware:
-        </p>
-        <ul>
-          <li><strong>Context Evaporation:</strong> Over long context windows, a local model forgets whether it is on Windows or Linux, inventing invalid paths, hallucinating non-existent shell flags, and mangling syntax.</li>
-          <li><strong>The Blind Worker Trap:</strong> When asked to write a function without exact AST context, a 12B model wastes thousands of precious tokens guessing what the surrounding structs, dependencies, or class signatures look like.</li>
-          <li><strong>Silent Swallowed Failures:</strong> In sequential scripts, syntax errors are only discovered after the entire multi-minute workflow has executed.</li>
-        </ul>
-      </section>
+    <h2 id="validation">Validation adapters</h2>
+    <p>A worker’s edit is checked before it lands, against the file validators its own language declares. A language file says how a file of its kind is checked; the harness runs that check over the candidate bytes in the worker’s shadow copy and hands the diagnostics back on the worker’s own turn, while it still holds the file.</p>
+    <p>No tool name and no language name is written in the C++. Which checker a project has, how it is spelled on this machine, what its exit codes mean and which lines of its output name a failure are all declared rows in the language file. A language whose file declares no check falls back to the grammar already parsing it for symbol anchors and asks where the parse errors are. When nothing is declared, nothing is claimed, and the run says so instead of guessing.</p>
+    <p>Once every task has landed, the project’s own test command runs over the whole tree. A failure there is always a code error worth a repair round.</p>
 
-      <!-- Section: Three-Valued Split -->
-      <section class="docs-section" id="doc-split">
-        <h2>3. The Three-Valued Split</h2>
-        <p>
-          The entire Beethoven harness is built around an uncompromising three-valued rule:
-        </p>
-        <ol>
-          <li>
-            <strong>Structure is C++'s:</strong> Whether a plan can run at all — whether the files it names exist, whether two tasks change one symbol at once, whether a dependency finishes before the task that needs it — is decided by code, from the plan and the AST, with no English read and no model asked.
-          </li>
-          <li>
-            <strong>Meaning is the model's:</strong> What a goal asks for, what a symbol should do, which file a change belongs in — these are readings of a sentence, and the model decides them. C++ never overrules that reading with a regex.
-          </li>
-          <li>
-            <strong>Facts are gathered by C++ and consumed by the model:</strong> The workspace tree, symbol outlines, imports, and compiler commands are gathered deterministically by the harness and injected into prompts verbatim.
-          </li>
-        </ol>
-      </section>
+    <h2 id="prompts">Prompt files and tags</h2>
+    <p>Every prompt lives under <code>files/prompts/</code> as Markdown with custom <code>&lt;bvn-*&gt;</code> block tags. Metadata tags are stripped during indexing, so the model never sees them. Sections are selected per role and per tag from SQLite, not injected as whole files.</p>
+    <pre><code>files/prompts/
+├── languages/      one file per language tag (107 today), plus _default.en.md
+├── frameworks/     django, flask, laravel, nextjs, rails, react, spring-boot, vue
+├── integrations/   CLI and tool integrations
+├── environments/   host OS and container guidance
+├── system/         agent role and persistent-mode prompts
+├── task_types/     one-call task contracts (compose, repair, worker_v2, …)
+└── snippets/       reusable fragments</code></pre>
+    <p>A language file is the whole declaration of one language. Read top to bottom:</p>
+    <ol>
+      <li><code>&lt;bvn-aliases&gt;</code>: the names the language answers to.</li>
+      <li><code>&lt;bvn-compose&gt;</code>: its facts. Extensions, manifests, import grammar, test runner, ignore dirs.</li>
+      <li><code>&lt;bvn-section&gt;</code> blocks: the conventions models read, per agent and per dialect tag.</li>
+      <li><code>&lt;bvn-validate&gt;</code>: how a file of this language is checked.</li>
+      <li><code>&lt;bvn-tool&gt;</code>: the language’s tools, with platform remaps and alternate spellings.</li>
+      <li><code>&lt;bvn-report&gt;</code> and <code>&lt;bvn-report-style&gt;</code>: how one line of checker output is read, and what a run’s exit codes and failure markers mean.</li>
+    </ol>
+    <pre><code>&lt;bvn-aliases&gt;c++, cplusplus&lt;/bvn-aliases&gt;
 
-      <!-- Section: Blueprint -->
-      <section class="docs-section" id="doc-blueprint">
-        <h2>4. Contract-First Composition</h2>
-        <p>
-          Rather than asking a worker LLM to arbitrarily generate code, Beethoven enforces top-down architecture. An <strong>Orchestrator LLM</strong> acts as lead architect, emitting a strict JSON blueprint:
-        </p>
-        <ul>
-          <li>One task per unit of work.</li>
-          <li>Each task explicitly names its target file, scope, dependencies, and behavioral contract.</li>
-          <li>The behavior travels with the task and reaches the worker verbatim.</li>
-        </ul>
-        <p>
-          Three conditions represent immediate refusals where the plan cannot run:
-        </p>
-        <div class="code-snippet" style="margin-bottom: 0.5rem;">
-          <code>1. task %d names %s, which is not in the project and no task creates it</code>
-        </div>
-        <div class="code-snippet" style="margin-bottom: 0.5rem;">
-          <code>2. task %d recreates %s, which task %d deleted</code>
-        </div>
-        <div class="code-snippet" style="margin-bottom: 1.5rem;">
-          <code>3. the validation command names %s, which is not in the project and no task creates it</code>
-        </div>
-      </section>
-
-      <!-- Section: AST -->
-      <section class="docs-section" id="doc-ast">
-        <h2>5. In-Memory Tree-Sitter AST Resolution</h2>
-        <p>
-          Beethoven maintains an in-memory graph of the workspace using <strong>Tree-Sitter</strong> C++ bindings. When a worker is dispatched:
-        </p>
-        <ul>
-          <li>The target file is parsed directly into an AST node tree.</li>
-          <li>Exact byte boundaries for function signatures, class members, and dependencies are sliced out.</li>
-          <li>The worker prompt receives the exact code slices rather than entire multi-thousand-line files, drastically saving context window tokens.</li>
-        </ul>
-      </section>
-
-      <!-- Section: Splicer -->
-      <section class="docs-section" id="doc-splicer">
-        <h2>6. Parallel Tasks with Safe Splicing</h2>
-        <p>
-          Work is decomposed into scoped tasks executed concurrently across native threads (<code>std::jthread</code>). 
-          When multiple tasks modify different functions within the same file:
-        </p>
-        <ul>
-          <li>The tasks serialize execution order within the wave.</li>
-          <li>A real-time byte-offset tracker monitors length changes produced by earlier edits.</li>
-          <li>Subsequent patches automatically adjust their target offsets before splicing, eliminating merge conflicts completely.</li>
-        </ul>
-      </section>
-
-      <!-- Section: Shadow Validation -->
-      <section class="docs-section" id="doc-shadow">
-        <h2>7. Shadow Compiler Validation Loop</h2>
-        <p>
-          Code isn't just written; it is verified. Before any worker's edit is committed to the workspace tree:
-        </p>
-        <ul>
-          <li>The candidate bytes are written to an in-memory shadow buffer.</li>
-          <li>The harness invokes the language's declared verification adapter (e.g. <code>clang++ -fsyntax-only</code>, <code>tsc --noEmit</code>, <code>cargo check</code>).</li>
-          <li>If compilation fails, <code>stderr</code> diagnostics are captured and fed directly back into an immediate repair loop. The worker fixes errors while still holding context.</li>
-        </ul>
-      </section>
-
-      <!-- Section: Prompt Specification -->
-      <section class="docs-section" id="doc-prompts">
-        <h2>8. Dynamic XML Prompt Tag Specification</h2>
-        <p>
-          Beethoven prompt templates live in <code>files/prompts/</code> as standard Markdown files with custom XML block tags (<code>&lt;bvn-*&gt;</code>).
-        </p>
-        <p>
-          <strong>Prompt Body Hygiene:</strong> All metadata tags are stripped before the prompt reaches the LLM. The model never sees metadata tags, ensuring zero wasted tokens.
-        </p>
-        <div class="code-snippet" style="margin-bottom: 1.5rem; flex-direction: column; align-items: flex-start; gap: 0.5rem;">
-          <code style="color: #4ade80;">&lt;bvn-compose&gt;
-  &lt;extensions&gt;.cpp .cc .cxx .h .hpp&lt;/extensions&gt;
-  &lt;runner&gt;cmake --build --preset ci-linux&lt;/runner&gt;
+&lt;bvn-compose&gt;
+  &lt;extensions&gt;cpp, cc, cxx, hpp, hh, hxx&lt;/extensions&gt;
+  &lt;accepts&gt;c&lt;/accepts&gt;
+  &lt;entry-points&gt;main.cpp, src/main.cpp&lt;/entry-points&gt;
+  &lt;indent unit="space" width="2" /&gt;
+  &lt;header-for from="cpp, cc, cxx" to="hpp" /&gt;
+  &lt;include-form&gt;#include "{path}"&lt;/include-form&gt;
 &lt;/bvn-compose&gt;
 
 &lt;bvn-section id="writing" agents="worker"&gt;
   Follow modern C++20 conventions: std::span, concepts, and RAII.
-&lt;/bvn-section&gt;</code>
-        </div>
-      </section>
+&lt;/bvn-section&gt;</code></pre>
+    <p>Child files such as <code>h.en.md</code> or <code>cc.en.md</code> declare no facts of their own; they carry <code>&lt;bvn-validate inherit="c" /&gt;</code> and whatever sections differ. The full grammar is in the repository’s <code>docs/prompt_specification.md</code>, rendered <a href="#live">below</a>.</p>
 
-      <!-- Section: Presets -->
-      <section class="docs-section" id="doc-presets">
-        <h2>9. CMake Presets</h2>
-        <p>
-          <code>CMakePresets.json</code> is the single source of truth for all builds:
-        </p>
-        <ul>
-          <li><code>dev</code> / <code>dev-linux</code>: Everything enabled with Dear ImGui desktop workbench and voice pipelines (<code>-O2 -g</code>).</li>
-          <li><code>ci-linux</code>: Orchestration engine only (headless). Warnings are fatal (<code>-Werror</code>).</li>
-          <li><code>asan</code>: AddressSanitizer + UndefinedBehaviorSanitizer instrumentation.</li>
-          <li><code>bench</code>: Maximum optimizations (<code>-O3</code> + LTO). Used strictly for performance benchmarks.</li>
-        </ul>
-      </section>
+    <h2 id="memory">Persistent memory</h2>
+    <p>An embedded SQLite store tracks environment facts, project quirks and past corrections across sessions. At the start of a session the harness queries it and injects the relevant facts into the orchestrator’s prompt, so the model stops rediscovering that a project uses <code>make</code>, not <code>cmake</code>. The workbench has a memory inspector tab.</p>
 
-      <!-- Section: Gates -->
-      <section class="docs-section" id="doc-gates">
-        <h2>10. Invariant Lint Gates</h2>
-        <p>
-          Beethoven enforces four hard source-level gates that run as ordinary <code>ctest</code> tests to guarantee architectural invariants never rot:
-        </p>
-        <ol>
-          <li><code>check_layer_rule</code>: Enforces that <code>ai/llm</code> remains transport-only, and <code>core</code>/<code>validation</code> never depend on <code>ai/*</code>.</li>
-          <li><code>check_empty_catch</code>: Prevents silently swallowed C++ exceptions.</li>
-          <li><code>check_voice_locks</code>: Enforces lock ordering discipline across real-time audio threads.</li>
-          <li><code>check_hang_path</code>: Verifies that failover hang breach paths stay 100% lock-free and allocation-free.</li>
-        </ol>
-      </section>
+    <h2 id="voice">Voice</h2>
+    <p>Speech-to-text and text-to-speech run inside the binary through sherpa-onnx on ONNX Runtime. The default STT model is Whisper tiny.en; TTS is Kokoro, with Piper voices and Kitten as alternatives, all fetched on demand from a catalog of checksummed models. Push-to-talk is bound to <kbd>F8</kbd>.</p>
+    <p>Barge-in works through speakers, not only headphones. A role arbiter fuses four sensors to decide who is talking: the playback state of the output sink, mic voice activity, a self-voice fingerprint against the agent’s persona, and an echo check of the mic transcript against the sentence just synthesised. Lock ordering across the real-time audio threads is enforced by a ctest gate.</p>
+    <p>A small in-process chat companion, Qwen2.5 0.5B in INT4 ONNX, runs on the same runtime for instant local chat and falls back to the configured coding model when its weights are absent.</p>
 
-      <!-- Section: Discussions -->
-      <section class="docs-section" id="doc-discussions">
-        <h2>11. Documentation Feedback &amp; Discussions</h2>
-        <p>
-          Have questions or improvements for the Beethoven specification? Join the discussion below powered by Giscus:
-        </p>
-        <div class="giscus-card" id="giscus-container">
-          <div id="giscus-mount"></div>
-        </div>
-      </section>
-    </main>
-  </div>
+    <h2 id="serve">Serve and connect</h2>
+    <p>Run the engine headless on the machine with the GPU and attach a workbench from another. Serve mode is HTTP plus WebSocket on one listen socket, port 7420 by default, bound to loopback unless you say otherwise. Authentication is a shared token, compared in constant time. TLS is a certificate and key pair away.</p>
+    <pre><code>beethoven --serve --bind 0.0.0.0 --port 7420 --auth-token "$BVN_SERVE_TOKEN" --tls-cert cert.pem --tls-key key.pem
+beethoven --connect wss://gpu-box:7420 --auth-token "$BVN_SERVE_TOKEN"</code></pre>
+    <p>Twenty-six RPC methods are on the wire today: file tree and read, symbol search and outline, diagnostics, diff list, approve and reject, job list, command dispatch, memory and prompt inspection. A phone portal that lets you approve a diff from your pocket is designed in the repository’s plans folder and not yet built.</p>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="container footer-bottom" style="border-top: none;">
-      <div>
-        &copy; 2026 Beethoven Studios. Licensed under Apache-2.0.
-      </div>
-      <div>
-        <a href="index.html">&larr; Return to Beethoven Home</a>
-      </div>
+    <h2 id="build">Toolchain and presets</h2>
+    <p>There is no global compiler requirement. On Windows the installer provisions a private MSYS2/MinGW64 toolchain outside the repository, at <code>%LOCALAPPDATA%\beethoven\msys64</code> by default or wherever <code>BVN_MSYS64</code> points. On Debian-family Linux it installs the apt packages it needs. Either way, <code>git clean -xdf</code> cannot destroy the toolchain.</p>
+    <pre><code>./install.sh            # or install.bat from cmd.exe
+./build.sh beethoven    # the main executable
+./build.sh test         # build and run the whole suite in parallel
+./build.sh test_reasoning_loop && ./build/windows/test_reasoning_loop.exe</code></pre>
+    <p><code>CMakePresets.json</code> is the source of truth:</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Preset</th><th>What it is for</th></tr></thead>
+        <tbody>
+          <tr><td><code>dev</code> / <code>dev-linux</code></td><td>Everything on, <code>-O2 -g</code>. What the build scripts use by default.</td></tr>
+          <tr><td><code>ci-linux</code></td><td>Orchestration engine only, no GUI, no voice, warnings fatal.</td></tr>
+          <tr><td><code>ci-windows</code></td><td>Full MSYS2/MinGW build, warnings fatal.</td></tr>
+          <tr><td><code>asan</code></td><td>AddressSanitizer and UBSan over the engine slice. Linux only.</td></tr>
+          <tr><td><code>bench</code></td><td><code>-O3</code> plus LTO. The only preset to measure with.</td></tr>
+        </tbody>
+      </table>
     </div>
-  </footer>
+    <p>Warnings are on and clean: <code>-Wall -Wextra</code> plus <code>-Wshadow</code>, <code>-Wcast-qual</code>, <code>-Wnon-virtual-dtor</code> and <code>-Woverloaded-virtual</code>, attached to first-party targets only. Dependencies are pinned to commits or hashes.</p>
 
-  <script src="js/main.js"></script>
-  <script src="js/giscus.js"></script>
-  <script>
-    // In-page search filter for docs sidebar
-    document.getElementById('docs-search-input')?.addEventListener('input', (e) => {
-      const query = e.target.value.toLowerCase();
-      document.querySelectorAll('.docs-nav-item').forEach(item => {
-        const text = item.textContent.toLowerCase();
-        item.style.display = text.includes(query) ? 'block' : 'none';
-      });
-    });
-  </script>
+    <h2 id="gates">Lint gates</h2>
+    <p>Beyond the GoogleTest suites, four source-level gates run as ordinary ctest tests and in CI. Each self-tests its own matcher on synthetic fixtures before reporting, because a gate that cannot fire is decoration.</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Gate</th><th>Invariant</th></tr></thead>
+        <tbody>
+          <tr><td><code>check_layer_rule</code></td><td><code>ai/llm</code> stays transport-only; <code>core</code> and <code>validation</code> never include <code>ai/*</code>; dissolved headers never come back.</td></tr>
+          <tr><td><code>check_empty_catch</code></td><td>No silently swallowed exceptions. A deliberately silent handler must carry an <code>expected:</code> comment saying why.</td></tr>
+          <tr><td><code>check_voice_locks</code></td><td>Lock ordering discipline across the real-time audio threads.</td></tr>
+          <tr><td><code>check_hang_path</code></td><td>The watchdog’s hang-breach path stays allocation-free and lock-free.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 id="cli">CLI</h2>
+    <p>The usage text, as the binary prints it.</p>
+    <pre><code>Usage: beethoven [OPTIONS] [compose &lt;goal&gt;] [plan &lt;goal&gt;]
+
+  (no command)           Launch interactive GUI
+  compose [--decide] [--fresh] &lt;goal&gt;
+                         Run the orchestrator pipeline (batch mode)
+  plan "&lt;goal&gt;" [--dry-run] [--fresh | --revise]
+  plan --dump            Size the goal, and when it leaves architectural
+                         decisions open, write a specification series under
+                         docs/plan/. --dry-run stops after the tree call and
+                         costs 1 call on a small goal, 2 on any other;
+                         --fresh replaces an existing plan (planner-origin
+                         docs only); --revise folds this goal into it;
+                         --dump prints the indexed plan as JSON and exits,
+                         with no model call.
+                         --probe &lt;slot-or-heading&gt; runs the ladder,
+                         the questionnaire and the tree call as a
+                         normal run does, then asks ONLY that chapter
+                         of the first document -- a slot like 3.11 or
+                         a heading fold like manifest or
+                         file-manifest -- and writes nothing.
+  --serve                Run as a headless workspace server (HTTP + WebSocket)
+  --connect &lt;url&gt;        Connect a GUI client to a running server
+
+Options:
+  --interactive          Attach in-process GUI (default with no command;
+                         with --serve: detachable view, engine keeps running)
+  --project-root &lt;path&gt;  Root directory of the codebase (default: .)
+  --api-endpoint &lt;url&gt;   LLM API base URL (default: config.ini setting or Ollama)
+  --max-retries &lt;n&gt;      Max self-healing attempts (default: 3)
+  --workers &lt;n&gt;          Max concurrent worker threads (default: CPU core count)
+  --log-file &lt;path&gt;      Redirect log output to file
+  --config &lt;path&gt;        Config file path (default: &lt;resource_dir&gt;/config.ini)
+  --verbose              Enable DEBUG level logging
+  --bind &lt;addr&gt;          Serve listen address (default: 127.0.0.1)
+  --port &lt;n&gt;             Serve listen port (default: 7420)
+  --auth-token &lt;tok&gt;     Shared by --serve and --connect (or BVN_SERVE_TOKEN)
+  --tls-cert &lt;path&gt;      PEM certificate (requires --tls-key)
+  --tls-key &lt;path&gt;       PEM private key (requires --tls-cert)
+  --insecure             Allow non-loopback bind without TLS (discouraged)
+  --help                 Show this help message
+
+Exit codes: 0 clean; 3 hung worker at shutdown; 70 watchdog hang.</code></pre>
+
+    <h2 id="layout">Repository layout</h2>
+    <pre><code>src/ai/          orchestrator, workers, chat, CSM, recovery, prompts, LLM transport
+src/commander/   chat, compose and plan jobs, command routing
+src/core/        engine bootstrap, state, VFS, watchdog, database, platform
+src/net/         serve/connect, providers, transport
+src/validation/  pluggable per-language compile/lint adapters
+src/voice/       STT/TTS, analyzer, aligner, role arbiter
+src/ui/          Dear ImGui workbench
+src/workspace/   Tree-Sitter workspace graph and file splicing
+files/prompts/   every sentence a model reads
+docs/            architecture, prompt spec, TODOs
+.agents/notes/   design plans, with landed dates and rejected hypotheses</code></pre>
+
+    <h2 id="live">From the repository</h2>
+    <p class="live-src">Rendered on load from raw.githubusercontent.com/anydaytv/beethoven, branch master. These are the engine’s own documents, unedited.</p>
+    <div class="live-tabs" role="tablist">
+      <button type="button" role="tab" class="active" data-doc="README.md">README.md</button>
+      <button type="button" role="tab" data-doc="docs/Beethoven.md">docs/Beethoven.md</button>
+      <button type="button" role="tab" data-doc="docs/prompt_specification.md">docs/prompt_specification.md</button>
+      <button type="button" role="tab" data-doc="docs/TODO.md">docs/TODO.md</button>
+    </div>
+    <div class="live-body" id="live-body"><p class="loading">Fetching…</p></div>
+
+    <h2 id="discuss">Discussions</h2>
+    <p>Questions about the reference, corrections, or things this page gets wrong. Comments are GitHub Discussions through Giscus.</p>
+    <div class="giscus-host" id="giscus-host"></div>
+  </article>
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="colophon">
+      <span>© 2026 Arthur Aszman</span>
+      <span>Apache-2.0</span>
+      <span><a href="./">Home</a></span>
+      <span><a href="https://github.com/anydaytv/beethoven">Engine repository</a></span>
+      <span><a href="https://github.com/beethovenstudios/beethoven-web">Site repository</a></span>
+    </div>
+  </div>
+</footer>
+
+<script src="vendor/marked.umd.js"></script>
+<script src="js/site.js"></script>
+<script src="js/giscus.js"></script>
+<script src="js/live-docs.js"></script>
 </body>
 </html>

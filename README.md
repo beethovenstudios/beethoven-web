@@ -1,50 +1,46 @@
-# Beethoven Web (`beethoven-web`)
+# beethoven-web
 
-Official project website and documentation reader for [**Beethoven**](https://github.com/anydaytv/beethoven) — the **100% free, open-source native AI code studio** for local models.
+The website for [**Beethoven**](https://github.com/anydaytv/beethoven), a free, open-source C++20 code studio and agentic harness for local models.
 
-- **Live Website:** [https://beethovenstudios.github.io/beethoven-web/](https://beethovenstudios.github.io/beethoven-web/)
-- **Organization Repository:** [https://github.com/beethovenstudios/beethoven-web](https://github.com/beethovenstudios/beethoven-web)
+- **Live:** https://beethovenstudios.github.io/beethoven-web/
+- **Engine:** https://github.com/anydaytv/beethoven (moves to `beethovenstudios/beethoven` at release candidate)
 
----
+## What is here
 
-## 🌟 What is Beethoven?
+A static site, no build step, no framework, no analytics.
 
-Beethoven is built for developers who want the power of AI pair programming without monthly subscriptions, cloud privacy compromises, or heavy Electron memory hogs.
+| Path | What it is |
+|---|---|
+| `index.html` | The home page, laid out as movements of a score: the problem, the rule, an interactive demo, the engine, hardware, limits, quickstart, discussions. |
+| `docs.html` | Curated reference plus the engine repository's own Markdown rendered on load, so the docs cannot drift from the code. |
+| `css/site.css` | One stylesheet. Paper and ink, gold for emphasis, staff lines as section rules. Light and dark. |
+| `js/slice-demo.js` | "What the model sees": a one-file reimplementation of Beethoven's symbol slicing, running the Tree-sitter C++ grammar in WebAssembly. |
+| `js/live-docs.js` | Fetches `README.md`, `docs/Beethoven.md`, `docs/prompt_specification.md` and `docs/TODO.md` from the engine repository and renders them with marked. |
+| `js/giscus.js` | GitHub Discussions comments through Giscus, theme synced with the page. |
+| `js/site.js` | Theme toggle, mobile menu, copy buttons, docs scroll-spy. |
+| `vendor/` | `web-tree-sitter` 0.27 (MIT), `tree-sitter-cpp` 0.23 grammar (MIT), `marked` (MIT). Vendored so the site has no runtime CDN dependency beyond fonts and Giscus. |
+| `assets/screens/` | Real screenshots of the Dear ImGui workbench, converted to WebP. |
 
-- **💻 Native VS Code-Like Studio:** Coded from scratch in high-performance C++. Opens in milliseconds with a familiar sidebar, workspace explorer, diff view, and terminal—with zero Electron bloat.
-- **🎙️ Embedded ONNX Voice & Chat:** Talk to your code hands-free. Low-latency push-to-talk voice with full-duplex barge-in and real-time chat powered directly by an embedded in-process ONNX engine.
-- **🆓 100% Free & Open Source Forever:** No seat licenses, no gated features, no token limits. Apache-2.0 licensed.
-- **🧠 Small Local Models That Actually Deliver:** Lets 7B–14B local models (running via Ollama, llama.cpp, or vLLM) punch above their weight through deterministic AST context and automated shadow compile verification.
-- **🔒 100% Private & Local:** All code, context, and inference remain strictly on your workstation.
+## Local preview
 
----
-
-## 💬 Giscus Discussions Integration
-
-The site includes built-in community discussions powered by GitHub Discussions and [Giscus](https://giscus.app).
-
-- **Connected Repository:** `beethovenstudios/beethoven-web`
-- **Category:** `General` (`DIC_kwDOUVVd384DFUWY`)
-- **Theme Sync:** Seamlessly adapts to light or dark mode in real time.
-
----
-
-## 🚀 Local Preview
-
-Run any local web server from the project directory:
+Any static server works. The Tree-sitter demo needs the page served over HTTP, not opened from disk.
 
 ```sh
-# Using Python
 python -m http.server 3000
-
-# Or using Node / npm
-npm start
+# or
+npx serve -l 3000 .
 ```
 
-Visit [http://localhost:3000](http://localhost:3000) in your browser.
+## Deploy
 
----
+Pushes to `main` deploy to GitHub Pages through `.github/workflows/deploy.yml`. The whole repository is uploaded as-is.
 
-## 📄 License
+## Giscus
 
-Distributed under the Apache-2.0 License.
+- Repository: `beethovenstudios/beethoven-web`
+- Category: `General`
+- IDs are in `js/giscus.js`. The Giscus app must be installed on the repository and Discussions must be enabled.
+
+## License
+
+Site content and code: Apache-2.0, © 2026 Arthur Aszman. Vendored libraries carry their own licenses in `vendor/`.

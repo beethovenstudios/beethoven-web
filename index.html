@@ -1,653 +1,452 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Beethoven — The Free, Native AI Code Studio for Local Models</title>
-  <meta name="description" content="A 100% free and open-source native AI code studio coded from scratch. Features a snappy VS Code-like workbench, embedded ONNX engine for voice & chat, and deterministic scaffolding for local models." />
-  
-  <!-- OpenGraph / Social -->
+  <title>Beethoven — a native code studio for the model on your own GPU</title>
+  <meta name="description" content="Beethoven is a free, open-source C++20 code studio and agentic harness for local models. It hands a 7B–31B model exact symbols instead of whole files, checks every edit with the compiler, and refuses plans that cannot run." />
+  <meta property="og:title" content="Beethoven — Structure is C++'s. Meaning is the model's." />
+  <meta property="og:description" content="A native code studio and agentic harness for local models. Free, Apache-2.0, nothing leaves your machine unless you point it somewhere." />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="Beethoven — The Free, Native AI Code Studio for Local Models" />
-  <meta property="og:description" content="A native VS Code-like studio coded from scratch with embedded ONNX voice & chat. 100% free, private, and open source." />
-  <meta property="og:url" content="https://beethovenstudios.github.io/beethoven-web/" />
+  <meta property="og:image" content="https://beethovenstudios.github.io/beethoven-web/assets/og.png" />
   <meta name="twitter:card" content="summary_large_image" />
-
-  <!-- Icons -->
+  <meta name="theme-color" content="#f4efe4" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#0f1320" media="(prefers-color-scheme: dark)" />
   <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg" />
   <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon-180.png" />
-
-  <!-- Stylesheet -->
-  <link rel="stylesheet" href="css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="css/site.css" />
+  <script>
+    // Apply the saved theme before first paint so the page never flashes.
+    (function () {
+      try {
+        var t = localStorage.getItem('bvn_theme');
+        if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', t);
+      } catch (e) { document.documentElement.setAttribute('data-theme', 'light'); }
+    })();
+  </script>
 </head>
 <body>
 
-  <!-- Background Lighting -->
-  <div class="ambient-bg">
-    <div class="ambient-glow-1"></div>
-    <div class="ambient-glow-2"></div>
-    <div class="grid-overlay"></div>
+<nav class="nav" aria-label="Primary">
+  <div class="wrap nav-inner">
+    <a href="./" class="brand" aria-label="Beethoven home">
+      <span class="word">Beethoven</span>
+      <span class="opus">Op. 0.9</span>
+    </a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="#problem">Problem</a></li>
+      <li><a href="#split">Rule</a></li>
+      <li><a href="#see">Demo</a></li>
+      <li><a href="#engine">Engine</a></li>
+      <li><a href="#hardware">Hardware</a></li>
+      <li><a href="#limits">Limits</a></li>
+      <li><a href="#start">Start</a></li>
+      <li><a href="docs.html">Docs</a></li>
+      <li><a class="ext" href="https://github.com/anydaytv/beethoven" target="_blank" rel="noopener">GitHub</a></li>
+    </ul>
+    <div class="nav-tools">
+      <button class="icon-btn theme-toggle" type="button" aria-label="Toggle colour theme"></button>
+      <button class="icon-btn menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-links">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
   </div>
+</nav>
 
-  <!-- Navigation Bar -->
-  <nav class="navbar">
-    <div class="container navbar-inner">
-      <a href="index.html" class="nav-brand">
-        <div class="brand-logo-wrap">
-          <img src="assets/icons/favicon.svg" alt="Beethoven Logo" class="brand-logo" />
-        </div>
-        <span>Beethoven</span>
-        <span class="nav-tag-badge badge-free">100% Free &amp; Open Source</span>
-      </a>
+<main>
 
-      <ul class="nav-menu">
-        <li><a href="#why-beethoven" class="nav-link">Why Beethoven</a></li>
-        <li><a href="#workbench" class="nav-link">Studio Workbench</a></li>
-        <li><a href="#voice-engine" class="nav-link">Voice &amp; ONNX</a></li>
-        <li><a href="#comparison" class="nav-link">Compare</a></li>
-        <li><a href="#quickstart" class="nav-link">Quickstart</a></li>
-        <li><a href="docs.html" class="nav-link">Docs</a></li>
-        <li><a href="#community" class="nav-link">Discussions</a></li>
-      </ul>
-
-      <div class="nav-actions">
-        <button class="theme-toggle-btn" aria-label="Toggle theme">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-        </button>
-
-        <a href="https://github.com/anydaytv/beethoven" target="_blank" rel="noopener" class="btn btn-outline btn-sm" title="GitHub Repository">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-          <span>GitHub</span>
-        </a>
-
-        <button class="mobile-menu-btn" aria-label="Open mobile menu">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-        </button>
-      </div>
+<!-- ============================ HERO ============================ -->
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Op. 0.9 &nbsp;·&nbsp; pre-release &nbsp;·&nbsp; C++20 &nbsp;·&nbsp; Apache-2.0 &nbsp;·&nbsp; Windows &amp; Linux</p>
+    <h1>Structure is C++’s. <span class="l2">Meaning is the <em>model’s.</em></span></h1>
+    <p class="lede">
+      Beethoven is a native code studio and agentic harness for the model already on your GPU.
+      It hands a 7B–31B local model exact symbols instead of whole files, checks every edit with the
+      compiler before it lands, and refuses plans that cannot run. Free, open source, and nothing
+      leaves your machine unless you point it somewhere.
+    </p>
+    <div class="cta">
+      <a class="btn" href="#start">Build it in a minute</a>
+      <a class="arrow-link" href="#see">See what the model sees</a>
     </div>
-  </nav>
 
-  <!-- Hero Section -->
-  <header class="hero">
-    <div class="container hero-content">
-      <a href="https://github.com/beethovenstudios" target="_blank" rel="noopener" class="hero-pill">
-        <span class="pulse-dot"></span>
-        <span>Transitioning to <strong>@beethovenstudios</strong> on Release Candidate</span>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      </a>
-
-      <h1 class="hero-title">
-        The Native AI Code Studio for <span class="gradient-text">Local Models</span>
-      </h1>
-
-      <p class="hero-subtitle">
-        Coded from scratch with a snappy <strong>VS Code-like workbench</strong>, an <strong>embedded ONNX engine</strong> for voice &amp; chat, and smart scaffolding that makes small local models punch above their weight. 
-        <br/><strong style="color: var(--text);">100% free, private, and open source forever.</strong>
-      </p>
-
-      <div class="hero-actions">
-        <a href="#quickstart" class="btn btn-primary">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-          <span>Get Started in 60s</span>
-        </a>
-        <a href="#workbench" class="btn btn-secondary">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-          <span>Explore the Studio</span>
-        </a>
-        <a href="#community" class="btn btn-outline">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          <span>Discussions</span>
-        </a>
-      </div>
-
-      <!-- Live Studio Workbench Showcase -->
-      <div class="workbench-showcase" id="workbench">
-        <div class="terminal-header">
-          <div class="terminal-controls">
-            <span class="control-circle control-red"></span>
-            <span class="control-circle control-yellow"></span>
-            <span class="control-circle control-green"></span>
-          </div>
-
-          <div class="terminal-tabs">
-            <button class="terminal-tab active" data-target="view-studio">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/></svg>
-              Studio Workbench
-            </button>
-            <button class="terminal-tab" data-target="view-voice">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
-              Voice &amp; Chat (ONNX)
-            </button>
-            <button class="terminal-tab" data-target="view-tasks">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
-              Auto-Pilot Tasks
-            </button>
-            <button class="terminal-tab" data-target="view-install">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
-              Zero-Friction Install
-            </button>
-          </div>
-
-          <div class="terminal-actions">
-            <button class="copy-btn">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-              <span>Copy</span>
-            </button>
-          </div>
+    <div class="plate">
+      <figure>
+        <div class="frame">
+          <img src="assets/screens/workbench-endpoints.webp" width="1916" height="1039" alt="The Beethoven workbench: project tree on the left, a C++ header open in the code viewer, an endpoints dialog pointing at a local Ollama server, and the agent log on the right." fetchpriority="high" />
         </div>
-
-        <div class="terminal-body" style="padding: 1rem;">
-          <!-- View 1: Studio Workbench Mockup -->
-          <div id="view-studio" class="code-view active">
-            <div class="studio-grid">
-              <!-- Left Sidebar File Tree -->
-              <div class="studio-sidebar">
-                <div class="sidebar-title">Workspace Explorer</div>
-                <div class="tree-item">📁 src/</div>
-                <div class="tree-item" style="padding-left: 1.2rem;">📁 core/</div>
-                <div class="tree-item active" style="padding-left: 1.2rem;">📄 router.cpp</div>
-                <div class="tree-item" style="padding-left: 1.2rem;">📄 vfs.h</div>
-                <div class="tree-item">📁 voice/</div>
-                <div class="tree-item" style="padding-left: 1.2rem;">📄 onnx_engine.cpp</div>
-                <div class="tree-item">📄 config.ini</div>
-                <div class="tree-item">📄 CMakeLists.txt</div>
-              </div>
-
-              <!-- Main Editor Area with Voice HUD -->
-              <div class="studio-editor-area">
-                <div class="editor-tab-bar">
-                  <div class="editor-tab-item">
-                    <span>📄 router.cpp</span>
-                    <span style="color: var(--accent-cyan);">●</span>
-                  </div>
-                  <div class="editor-tab-item" style="opacity: 0.6;">
-                    <span>📄 onnx_engine.cpp</span>
-                  </div>
-                </div>
-
-                <div style="font-family: var(--font-mono); font-size: 0.85rem; line-height: 1.6; color: #cbd5e1;">
-                  <span class="code-token-comment">// Native C++20 editor: instant zero-lag rendering</span><br/>
-                  <span class="code-token-type">auto</span> router = std::make_unique&lt;<span class="code-token-type">NetworkRouter</span>&gt;();<br/>
-                  router-&gt;<span class="code-token-fn">enable_stream</span>(<span class="code-token-str">"ws://localhost:8080"</span>);<br/>
-                  <span class="code-token-comment">// AI generated patch auto-validated in shadow compiler:</span><br/>
-                  router-&gt;<span class="code-token-fn">attach_onnx_voice_pipeline</span>(sample_rate_48k);
-                </div>
-
-                <!-- Integrated Voice HUD -->
-                <div class="voice-hud-bar">
-                  <div class="voice-status">
-                    <div class="voice-mic-icon">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
-                    </div>
-                    <div>
-                      <div class="voice-transcript">
-                        <em>"Refactor the socket connection to support automatic reconnection."</em>
-                      </div>
-                      <div style="font-size: 0.72rem; color: var(--accent-cyan);">
-                        ● Voice stream active &bull; Whisper ONNX in-process
-                      </div>
-                    </div>
-                  </div>
-                  <div class="voice-wave">
-                    <span class="wave-bar"></span>
-                    <span class="wave-bar"></span>
-                    <span class="wave-bar"></span>
-                    <span class="wave-bar"></span>
-                    <span class="wave-bar"></span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- View 2: Voice & Chat (ONNX) -->
-          <div id="view-voice" class="code-view">
-            <div style="font-family: var(--font-mono); font-size: 0.86rem; line-height: 1.8;">
-              <span class="code-token-comment">// Embedded In-Process ONNX Inference Engine</span><br/>
-              <span style="color: var(--accent);">[Voice Pipeline]</span> Push-to-Talk triggered (Spacebar held)<br/>
-              <span style="color: #cbd5e1;">&gt; User: "Add unit tests for the VFS overlay and run them."</span><br/>
-              <span class="code-token-fn">[ONNX ASR Engine]</span> Audio transcribed in 64ms (zero cloud roundtrips)<br/>
-              <span class="code-token-success">[Beethoven Studio]</span> "I've drafted test_vfs_overlay.cpp and verified 6 test cases against the shadow compiler. All 6 passed."<br/>
-              <span class="code-token-comment">// Full-duplex barge-in supported: speak at any moment to interrupt and steer</span>
-            </div>
-          </div>
-
-          <!-- View 3: Auto-Pilot Tasks -->
-          <div id="view-tasks" class="code-view">
-            <div style="font-family: var(--font-mono); font-size: 0.86rem; line-height: 1.8;">
-              <span class="code-token-comment">// Small local model (12B) executing multi-file goal effortlessly</span><br/>
-              <span style="color: var(--accent);">Goal:</span> "Add rate-limiting middleware to all HTTP routes"<br/>
-              &bull; <span class="code-token-key">Task #1:</span> Defined TokenBucket struct in <span class="code-token-str">src/net/limiter.h</span><br/>
-              &bull; <span class="code-token-key">Task #2:</span> Updated request dispatch in <span class="code-token-str">src/net/router.cpp</span> (safe dynamic offset splice)<br/>
-              &bull; <span class="code-token-key">Task #3:</span> Pre-compiled in shadow buffer: <span class="code-token-success">PASSED in 120ms</span><br/>
-              <span class="code-token-success">[Status]</span> Goal accomplished with zero merge conflicts and zero hallucinations.
-            </div>
-          </div>
-
-          <!-- View 4: Zero Friction Install -->
-          <div id="view-install" class="code-view">
-            <div style="font-family: var(--font-mono); font-size: 0.86rem; line-height: 1.8;">
-              <span class="code-token-comment"># No Python virtual environment conflicts. No massive node_modules.</span><br/>
-              <span class="code-token-comment"># Single command installer bootstraps your self-contained studio:</span><br/>
-              <span class="code-token-key">$</span> git clone https://github.com/anydaytv/beethoven.git<br/>
-              <span class="code-token-key">$</span> cd beethoven &amp;&amp; ./install.sh<br/>
-              <span class="code-token-key">$</span> ./build.sh beethoven<br/>
-              <span class="code-token-success">Ready! Launching Beethoven Studio...</span>
-            </div>
-          </div>
-        </div>
-      </div>
+        <figcaption><b>Plate I.</b> The workbench. Dear ImGui, 80&nbsp;MB resident by its own title bar, Gemma 4 31B over a local Ollama endpoint. A screenshot, not a mockup.</figcaption>
+      </figure>
     </div>
-  </header>
 
-  <!-- Big Value Pillars: Ease of Use, Local Models, Free & Open Source -->
-  <section class="section" id="why-beethoven">
-    <div class="container">
-      <div class="section-header">
-        <span class="section-tag">Built for Developers</span>
-        <h2 class="section-title">Everything You Need. Nothing in Your Way.</h2>
-        <p class="section-desc">
-          Say goodbye to sluggish web wrappers, endless cloud bills, and complex configurations. Beethoven gives you a clean, lightning-fast native environment that just works.
+    <div class="facts" aria-label="Project facts">
+      <div><span class="n">85k</span><span class="l">lines of C++20</span></div>
+      <div><span class="n">200+</span><span class="l">test targets in ctest</span></div>
+      <div><span class="n">107</span><span class="l">language files</span></div>
+      <div><span class="n">4</span><span class="l">architectural gates</span></div>
+      <div><span class="n">0</span><span class="l">subscriptions</span></div>
+    </div>
+  </div>
+</header>
+
+<!-- ============================ I. THE PROBLEM ============================ -->
+<section id="problem" class="section">
+  <div class="wrap">
+    <div class="staff" aria-hidden="true"><div class="mark"><span class="num">I.</span><span class="tempo">Grave</span></div><div class="end"></div></div>
+    <div class="two-col">
+      <div>
+        <p class="eyebrow">The problem</p>
+        <h2>The blind worker.</h2>
+        <p class="section-head" style="margin-top:1rem">
+          Every popular coding agent was tuned on a frontier model with a huge context window and a cloud bill.
+          Point one at a 12B model on a mid-range GPU and three things happen.
         </p>
+        <p class="pull">The usual fix is a bigger model. <em>Beethoven’s fix is a smaller job.</em></p>
       </div>
-
-      <div class="features-grid">
-        <!-- Benefit 1 -->
-        <div class="feature-card">
-          <div class="feature-icon-wrap">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-          </div>
-          <h3 class="feature-title">Native VS Code-Like Studio</h3>
-          <p class="feature-desc">
-            Coded from scratch with a familiar editor layout, workspace explorer, integrated diff viewer, and terminal. No heavy Electron runtime hogging gigabytes of your RAM.
-          </p>
-          <div class="feature-meta">
-            <span>UI Engine</span>
-            <span class="feature-meta-tag">Native Workbench</span>
-          </div>
-        </div>
-
-        <!-- Benefit 2 -->
-        <div class="feature-card">
-          <div class="feature-icon-wrap">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
-          </div>
-          <h3 class="feature-title">Embedded ONNX Voice &amp; Chat</h3>
-          <p class="feature-desc">
-            Talk to your codebase naturally. Hands-free push-to-talk voice with full-duplex barge-in and conversational chat powered directly by an embedded, offline ONNX engine.
-          </p>
-          <div class="feature-meta">
-            <span>Voice &amp; ASR</span>
-            <span class="feature-meta-tag">Embedded ONNX</span>
-          </div>
-        </div>
-
-        <!-- Benefit 3 -->
-        <div class="feature-card">
-          <div class="feature-icon-wrap">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          </div>
-          <h3 class="feature-title">100% Free &amp; Open Source</h3>
-          <p class="feature-desc">
-            Zero subscription fees, no artificial paywalls, no monthly token limits, and no vendor lock-in. Licensed under Apache-2.0 and free forever.
-          </p>
-          <div class="feature-meta">
-            <span>License</span>
-            <span class="feature-meta-tag">Apache-2.0</span>
-          </div>
-        </div>
-
-        <!-- Benefit 4 -->
-        <div class="feature-card">
-          <div class="feature-icon-wrap">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
-          </div>
-          <h3 class="feature-title">Local Models That Actually Deliver</h3>
-          <p class="feature-desc">
-            You don't need a massive, expensive 70B cloud model. Beethoven feeds small 7B–14B local models exact AST symbols so they code accurately without hallucinations.
-          </p>
-          <div class="feature-meta">
-            <span>Model Support</span>
-            <span class="feature-meta-tag">Ollama / vLLM / llama.cpp</span>
-          </div>
-        </div>
-
-        <!-- Benefit 5 -->
-        <div class="feature-card">
-          <div class="feature-icon-wrap">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          </div>
-          <h3 class="feature-title">100% Private &amp; Offline</h3>
-          <p class="feature-desc">
-            Your proprietary code never touches an external server. Everything runs locally on your workstation hardware with zero telemetry.
-          </p>
-          <div class="feature-meta">
-            <span>Privacy</span>
-            <span class="feature-meta-tag">Air-Gapped Ready</span>
-          </div>
-        </div>
-
-        <!-- Benefit 6 -->
-        <div class="feature-card">
-          <div class="feature-icon-wrap">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-          </div>
-          <h3 class="feature-title">Self-Healing Shadow Compiles</h3>
-          <p class="feature-desc">
-            Code changes are pre-verified through silent in-memory shadow compiles. Syntax mistakes are caught and fixed automatically before you ever hit save.
-          </p>
-          <div class="feature-meta">
-            <span>Verification</span>
-            <span class="feature-meta-tag">Instant Diagnostics</span>
-          </div>
-        </div>
-      </div>
+      <ol class="problems">
+        <li>
+          <h4>Context evaporates.</h4>
+          <p>Forty turns in, the model forgets whether it is on Windows or Linux. It invents paths, hallucinates shell flags, and mangles syntax it wrote correctly an hour ago.</p>
+        </li>
+        <li>
+          <h4>The worker is blind.</h4>
+          <p>Asked to change a function it was never shown, a 12B model burns a thousand tokens guessing what the struct next door looks like. Then it guesses wrong.</p>
+        </li>
+        <li>
+          <h4>Failures are swallowed.</h4>
+          <p>In a sequential script, the syntax error in step two surfaces after step nine has run. The model repairs the wrong thing with the wrong context.</p>
+        </li>
+      </ol>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- Comparison: Cloud Subscriptions vs Beethoven -->
-  <section class="section" id="comparison" style="background: var(--bg-subtle);">
-    <div class="container">
-      <div class="section-header">
-        <span class="section-tag">Comparison</span>
-        <h2 class="section-title">Cloud AI Subscriptions vs. Beethoven Studio</h2>
-        <p class="section-desc">
-          Stop paying monthly fees to upload your intellectual property to cloud servers.
-        </p>
-      </div>
-
-      <div class="comparison-grid">
-        <!-- Cloud AI Tools -->
-        <div class="comparison-card legacy">
-          <div class="comparison-header">
-            <h3>Cloud AI Subscriptions</h3>
-            <span class="comparison-badge badge-legacy">Copilot / Cursor / Cloud IDEs</span>
-          </div>
-
-          <ul class="comparison-list">
-            <li class="comparison-item">
-              <span class="item-icon">❌</span>
-              <div class="item-desc">
-                <strong>$20 to $50 Monthly Fees Per Seat</strong>
-                <span>Expensive recurring bills that scale with team size and cut you off when quotas are reached.</span>
-              </div>
-            </li>
-            <li class="comparison-item">
-              <span class="item-icon">❌</span>
-              <div class="item-desc">
-                <strong>Your Code Leaves Your Machine</strong>
-                <span>Source code, proprietary logic, and private APIs are streamed to third-party cloud servers.</span>
-              </div>
-            </li>
-            <li class="comparison-item">
-              <span class="item-icon">❌</span>
-              <div class="item-desc">
-                <strong>Sluggish Electron Runtimes</strong>
-                <span>Heavily bloated Chromium shells that consume 1.5GB+ of RAM before you even type a character.</span>
-              </div>
-            </li>
-            <li class="comparison-item">
-              <span class="item-icon">❌</span>
-              <div class="item-desc">
-                <strong>No Built-In Voice Assistant</strong>
-                <span>Voice control requires separate plugins or third-party web services with noticeable latency.</span>
-              </div>
-            </li>
-          </ul>
-        </div>
-
-        <!-- Beethoven Studio -->
-        <div class="comparison-card beethoven">
-          <div class="comparison-header">
-            <h3>Beethoven Studio</h3>
-            <span class="comparison-badge badge-beethoven">100% Free &amp; Open Source</span>
-          </div>
-
-          <ul class="comparison-list">
-            <li class="comparison-item">
-              <span class="item-icon">✅</span>
-              <div class="item-desc">
-                <strong>Completely Free &amp; Open Source Forever</strong>
-                <span>No subscriptions, no tier walls, no credits. Apache-2.0 license with full ownership of your tools.</span>
-              </div>
-            </li>
-            <li class="comparison-item">
-              <span class="item-icon">✅</span>
-              <div class="item-desc">
-                <strong>100% Local &amp; Confidential</strong>
-                <span>Your code stays on your hard drive. Connect to Ollama, LM Studio, or local models without internet.</span>
-              </div>
-            </li>
-            <li class="comparison-item">
-              <span class="item-icon">✅</span>
-              <div class="item-desc">
-                <strong>Snappy Native VS Code-Like Studio</strong>
-                <span>Coded from scratch in high-performance C++. Opens in milliseconds with featherweight resource usage.</span>
-              </div>
-            </li>
-            <li class="comparison-item">
-              <span class="item-icon">✅</span>
-              <div class="item-desc">
-                <strong>Embedded ONNX Voice &amp; Chat</strong>
-                <span>Talk directly to your code with low-latency push-to-talk voice and barge-in conversational intelligence.</span>
-              </div>
-            </li>
-          </ul>
-        </div>
-      </div>
+<!-- ============================ II. THE RULE ============================ -->
+<section id="split" class="section">
+  <div class="wrap">
+    <div class="staff" aria-hidden="true"><div class="mark"><span class="num">II.</span><span class="tempo">Allegro con brio</span></div><div class="end"></div></div>
+    <div class="section-head">
+      <p class="eyebrow">The rule</p>
+      <h2>One split, three owners.</h2>
+      <p>The whole harness is built on a single rule. Three kinds of thing get decided, and each has exactly one owner. C++ never overrules the model with a regex, and the model is never asked a question code can answer.</p>
     </div>
-  </section>
 
-  <!-- Easy Workflow Steps -->
-  <section class="section" id="how-it-works">
-    <div class="container">
-      <div class="section-header">
-        <span class="section-tag">Effortless Workflow</span>
-        <h2 class="section-title">How Beethoven Works in 4 Steps</h2>
-        <p class="section-desc">
-          Focus on building. Let Beethoven handle the context, syntax verification, and multi-file coordination.
-        </p>
-      </div>
-
-      <div class="quickstart-steps">
-        <div class="step-card">
-          <span class="step-num">STEP 1</span>
-          <h4>Open Your Project</h4>
-          <p>Point Beethoven at any codebase. It immediately maps files, imports, and symbols with zero setup.</p>
-        </div>
-
-        <div class="step-card">
-          <span class="step-num">STEP 2</span>
-          <h4>Speak or Type Your Goal</h4>
-          <p>Hold the spacebar to talk or type in the chat panel. Describe what feature or refactor you want.</p>
-        </div>
-
-        <div class="step-card">
-          <span class="step-num">STEP 3</span>
-          <h4>Silent Shadow Verification</h4>
-          <p>Beethoven compiles and verifies the changes in memory, fixing any syntax issues automatically.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Quickstart Guide -->
-  <section class="section" id="quickstart" style="background: var(--bg-subtle);">
-    <div class="container">
-      <div class="section-header">
-        <span class="section-tag">Fast Installation</span>
-        <h2 class="section-title">Up and Running in 60 Seconds</h2>
-        <p class="section-desc">
-          Beethoven includes an automated installer that provisions everything for Windows and Linux without touching your global system compilers.
-        </p>
-      </div>
-
-      <div class="quickstart-box">
-        <div class="quickstart-steps">
-          <div class="step-card">
-            <span class="step-num">STEP 1</span>
-            <h4>Clone Repository</h4>
-            <p>Clone the open-source repository to your workstation.</p>
-            <div class="code-snippet">
-              <code>git clone https://github.com/anydaytv/beethoven.git</code>
-              <button class="copy-btn snippet-copy" data-clipboard="git clone https://github.com/anydaytv/beethoven.git">Copy</button>
-            </div>
-          </div>
-
-          <div class="step-card">
-            <span class="step-num">STEP 2</span>
-            <h4>Run Installer</h4>
-            <p>Bootstraps the self-contained toolchain outside the repo.</p>
-            <div class="code-snippet">
-              <code>./install.sh # or install.bat</code>
-              <button class="copy-btn snippet-copy" data-clipboard="./install.sh">Copy</button>
-            </div>
-          </div>
-
-          <div class="step-card">
-            <span class="step-num">STEP 3</span>
-            <h4>Launch Studio</h4>
-            <p>Build and start the native studio workbench with voice enabled.</p>
-            <div class="code-snippet">
-              <code>./build.sh beethoven</code>
-              <button class="copy-btn snippet-copy" data-clipboard="./build.sh beethoven">Copy</button>
-            </div>
-          </div>
-        </div>
-
-        <div style="text-align: center;">
-          <a href="docs.html" class="btn btn-primary">Read Technical Specs &amp; Engine Docs &rarr;</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Organization Transition Notice -->
-  <section class="container">
-    <div class="transition-banner">
-      <div class="transition-info">
-        <div class="transition-icon">🏛️</div>
-        <div class="transition-text">
-          <h4>Organization Migration Roadmap</h4>
-          <p>
-            Beethoven is currently hosted at <a href="https://github.com/anydaytv/beethoven" target="_blank" rel="noopener"><strong>anydaytv/beethoven</strong></a>. 
-            Upon reaching Release Candidate (RC), the project and active releases will migrate to the official organization repository at <a href="https://github.com/beethovenstudios" target="_blank" rel="noopener"><strong>github.com/beethovenstudios</strong></a>.
-          </p>
-        </div>
+    <div class="split">
+      <div>
+        <span class="owner">Owner: C++</span>
+        <h3>Structure</h3>
+        <p>Whether a plan can run at all. Whether the files it names exist, whether two tasks change one symbol at once, whether a dependency finishes before the task that needs it. Decided by code, from the plan and the syntax tree, with no English read and no model asked.</p>
       </div>
       <div>
-        <a href="https://github.com/beethovenstudios" target="_blank" rel="noopener" class="btn btn-primary btn-sm">Follow @beethovenstudios</a>
+        <span class="owner">Owner: the model</span>
+        <h3>Meaning</h3>
+        <p>What a goal asks for. What a symbol should do. Which file a change belongs in. These are readings of a sentence, and the thing that read the sentence is the thing that decides.</p>
+      </div>
+      <div>
+        <span class="owner">Gathered by C++, read by the model</span>
+        <h3>Facts</h3>
+        <p>The tree, the outline, the imports, the test runner this machine actually has. The harness finds them and puts them in the prompt. The model spends its tokens deciding, not discovering.</p>
       </div>
     </div>
-  </section>
 
-  <!-- Giscus Community Discussions Section -->
-  <section class="section giscus-section" id="community">
-    <div class="container">
-      <div class="section-header">
-        <span class="section-tag">Community &amp; Feedback</span>
-        <h2 class="section-title">Join the Discussion</h2>
-        <p class="section-desc">
-          Powered directly by <strong>GitHub Discussions</strong> and Giscus. Ask questions, suggest features, or share your local model setup below.
-        </p>
+    <div class="two-col">
+      <div>
+        <h3>The check is a fixed list.</h3>
+        <p class="muted">When the orchestrator emits a blueprint, C++ checks its structure against the tree. Each finding is a sentence the planner is shown word for word. Three are refusals. The rest are questions the planner must answer or fix. These are the actual format strings from the engine.</p>
+        <p class="muted">A finding goes back to the planner in its own words, three asks at most for the whole plan. The harness never quietly deletes a task over its own reading of a sentence.</p>
       </div>
+      <ul class="findings" aria-label="Blueprint structure checks">
+        <li><span class="k refuse">Refuse</span><span class="v">task <i>%d</i> names <i>%s</i>, which is not in the project and no task creates it</span></li>
+        <li><span class="k refuse">Refuse</span><span class="v">task <i>%d</i> recreates <i>%s</i>, which task <i>%d</i> deleted</span></li>
+        <li><span class="k refuse">Refuse</span><span class="v">the validation command names <i>%s</i>, which is not in the project and no task creates it</span></li>
+        <li><span class="k">Ask</span><span class="v">task <i>%d</i> names symbol <i>%s</i> in <i>%s</i>; <i>%s</i> is where the project defines it today</span></li>
+        <li><span class="k">Ask</span><span class="v">task <i>%d</i> writes <i>%s</i>; nothing else in this project has that extension</span></li>
+        <li><span class="k">Ask</span><span class="v">tasks <i>%d</i> and <i>%d</i> both change <i>%s</i> in <i>%s</i> in generation <i>%d</i>; the second starts from the first’s result — one task, or say why two</span></li>
+        <li><span class="k">Ask</span><span class="v">task <i>%d</i> is in generation <i>%d</i> and depends on task <i>%d</i> in generation <i>%d</i>; a dependency has to finish first</span></li>
+        <li><span class="k">Ask</span><span class="v">task <i>%d</i> edits <i>%s</i>, which goal_files does not list</span></li>
+        <li><span class="k">Ask</span><span class="v">task <i>%d</i> changes <i>%s</i>, a test that existed before the run; say why in seed_tests_touched or drop the task</span></li>
+        <li><span class="k">Ask</span><span class="v">task <i>%d</i> deletes <i>%s</i>; say in definitions whether its definitions are moved by this plan or removed from the project</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
 
-      <div class="giscus-card" id="giscus-container">
-        <!-- Toolbar -->
-        <div class="giscus-toolbar">
-          <div class="giscus-meta">
-            <div class="giscus-badge">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-              <span>Discussions: <strong id="giscus-active-repo-badge">beethovenstudios/beethoven-web</strong></span>
-            </div>
-          </div>
+<!-- ============================ III. WHAT THE MODEL SEES ============================ -->
+<section id="see" class="section">
+  <div class="wrap">
+    <div class="staff" aria-hidden="true"><div class="mark"><span class="num">III.</span><span class="tempo">Andante</span></div><div class="end"></div></div>
+    <div class="section-head">
+      <p class="eyebrow">Try it</p>
+      <h2>What the model sees.</h2>
+      <p>
+        Most agents paste the whole file into the prompt and hope. Beethoven keeps a Tree-sitter parse of the
+        workspace and cuts out the exact byte range of the symbol a task touches, plus the signatures it depends on.
+        Pick a symbol below. The same Tree-sitter C++ grammar the engine uses runs here in WebAssembly.
+        Paste your own file if you like.
+      </p>
+    </div>
 
-          <div class="giscus-repo-select-wrap">
-            <label for="giscus-repo-select" style="font-size: 0.8rem; color: var(--text-muted);">Repository:</label>
-            <select id="giscus-repo-select" class="giscus-select">
-              <option value="beethovenstudios/beethoven-web">beethovenstudios/beethoven-web (Site)</option>
-              <option value="beethovenstudios/beethoven">beethovenstudios/beethoven (Org Engine)</option>
-              <option value="anydaytv/beethoven">anydaytv/beethoven (Dev Repo)</option>
-            </select>
-            <button id="giscus-configure-btn" class="btn btn-outline btn-sm">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-              <span>Setup / Config</span>
-            </button>
-          </div>
+    <div class="demo" id="slice-demo">
+      <div class="demo-bar">
+        <label for="slice-symbol">Task targets</label>
+        <select id="slice-symbol" disabled><option>loading grammar…</option></select>
+        <button class="txt" type="button" id="slice-edit">Edit file</button>
+        <button class="txt" type="button" id="slice-reset">Reset sample</button>
+        <span class="status" id="slice-status">Loading Tree-sitter…</span>
+      </div>
+      <div class="demo-panes">
+        <div class="demo-pane">
+          <header><span>What a naive agent sends</span><span class="tok" id="tok-file">—</span></header>
+          <pre id="slice-source" aria-label="Source file with the selected symbol highlighted"></pre>
+          <textarea id="slice-editor" hidden spellcheck="false" aria-label="Edit the source file"></textarea>
         </div>
-
-        <!-- Setup Guide Banner if Repo not yet linked on GitHub -->
-        <div id="giscus-setup-guide" class="giscus-fallback-info">
-          <h4>🚀 Ready to Connect GitHub Discussions</h4>
-          <p>
-            Giscus uses your repository's public Discussions for comments. Make sure the <a href="https://github.com/apps/giscus" target="_blank" rel="noopener">giscus app</a> is authorized on your organization or repository to enable live interaction.
-          </p>
+        <div class="demo-pane">
+          <header><span>What Beethoven sends</span><span class="tok" id="tok-slice">—</span></header>
+          <pre id="slice-output" aria-label="The slice the worker receives"></pre>
         </div>
-
-        <!-- Giscus Frame Mount Point -->
-        <div id="giscus-mount"></div>
+      </div>
+      <div class="demo-foot">
+        <span class="ratio" id="slice-ratio"></span>
+        <span id="slice-range"></span>
+        <span class="faint">tokens ≈ bytes ÷ 3.5, an estimate</span>
       </div>
     </div>
-  </section>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="container">
-      <div class="footer-grid">
-        <div class="footer-brand">
-          <h3>
-            <img src="assets/icons/favicon.svg" alt="Beethoven" style="width: 24px; height: 24px;" />
-            Beethoven
-          </h3>
-          <p>
-            The 100% free, open-source native AI code studio. Coded from scratch with a snappy VS Code-like workbench and embedded ONNX engine for voice &amp; chat.
-          </p>
-        </div>
+    <p class="note">
+      <b>What this is.</b> A small reimplementation of the slicing rule in JavaScript, for one file.
+      The engine does it in C++ over the whole workspace, follows dependencies across files, and hands the
+      result to the worker together with the task’s behaviour contract. The parse is the same; the plumbing is not.
+    </p>
+  </div>
+</section>
 
-        <div class="footer-col">
-          <h5>Studio Features</h5>
-          <ul class="footer-links">
-            <li><a href="#workbench">Native Workbench</a></li>
-            <li><a href="#voice-engine">Embedded ONNX Voice</a></li>
-            <li><a href="#why-beethoven">Local Model Support</a></li>
-            <li><a href="#how-it-works">Shadow Verification</a></li>
-          </ul>
-        </div>
+<!-- ============================ IV. THE ENGINE ============================ -->
+<section id="engine" class="section">
+  <div class="wrap">
+    <div class="staff" aria-hidden="true"><div class="mark"><span class="num">IV.</span><span class="tempo">Allegro</span></div><div class="end"></div></div>
+    <div class="section-head">
+      <p class="eyebrow">The engine</p>
+      <h2>What is in the box.</h2>
+      <p>A concurrency-first C++20 engine, a Dear ImGui workbench, and a voice pipeline, in one binary with no runtime underneath it. Every item here is in the repository today.</p>
+    </div>
 
-        <div class="footer-col">
-          <h5>Documentation</h5>
-          <ul class="footer-links">
-            <li><a href="docs.html#doc-overview">Architecture Whitepaper</a></li>
-            <li><a href="docs.html#doc-prompts">Prompt &amp; Tag Specs</a></li>
-            <li><a href="docs.html#doc-presets">CMake Presets</a></li>
-            <li><a href="docs.html#doc-gates">Invariant Gates</a></li>
-          </ul>
-        </div>
+    <div class="engine">
+      <section>
+        <h3>Contract-first blueprints <span class="tag">orchestrator</span></h3>
+        <p>An orchestrator model emits a strict JSON plan: one task per unit of work, each naming its file, its scope, its dependencies and, in its own words, the behaviour it must deliver. That behaviour travels with the task and reaches the worker verbatim. No worker ever guesses a signature.</p>
+      </section>
+      <section>
+        <h3>Symbol slicing <span class="tag">tree-sitter</span></h3>
+        <p>A live Tree-sitter graph of the workspace. When a worker is dispatched, the engine extracts the exact byte ranges of the symbol and its dependencies and injects them into the prompt. A worker sees a few hundred tokens of the right code, not a few thousand of the wrong file.</p>
+      </section>
+      <section>
+        <h3>Parallel tasks, safe splicing <span class="tag">std::jthread</span></h3>
+        <p>Tasks run concurrently across native threads. Tasks on the same file are serialised inside a wave, and a byte-offset tracker adjusts every later patch for the length changes earlier ones produced. Two workers editing two functions in one file never conflict.</p>
+      </section>
+      <section>
+        <h3>Validation the language declares <span class="tag">107 language files</span></h3>
+        <p>No tool name is written in the C++. Each language file declares how a file of its kind is checked, how the tool is spelled on each platform, and which output lines mean failure. Errors go back to the worker on its own turn, while it still holds the file. A language that declares nothing falls back to the grammar already parsing it.</p>
+        <pre><code>&lt;bvn-compose&gt;
+  &lt;extensions&gt;cpp, cc, cxx, hpp, hh, hxx&lt;/extensions&gt;
+  &lt;accepts&gt;c&lt;/accepts&gt;
+  &lt;entry-points&gt;main.cpp, src/main.cpp&lt;/entry-points&gt;
+  &lt;header-for from="cpp, cc, cxx" to="hpp" /&gt;
+  &lt;include-form&gt;#include "{path}"&lt;/include-form&gt;
+&lt;/bvn-compose&gt;</code></pre>
+      </section>
+      <section>
+        <h3>Persistent memory <span class="tag">sqlite</span></h3>
+        <p>An embedded SQLite store carries environment facts, project quirks and past corrections across sessions. The model stops rediscovering that this project uses <code>make</code>, not <code>cmake</code>, and that the host is RedHat, not Ubuntu.</p>
+      </section>
+      <section>
+        <h3>Prompts as Markdown with tags <span class="tag">&lt;bvn-section&gt;</span></h3>
+        <p>Every sentence a model reads lives in a Markdown file under <code>files/prompts/</code>, cut into sections by role and tag. A worker editing a <code>.c</code> file gets C rules; one editing <code>.ts</code> gets ES module rules. Metadata tags are stripped before the prompt leaves, so the model never sees a byte of plumbing.</p>
+      </section>
+      <section>
+        <h3>Voice, in process <span class="tag">sherpa-onnx</span></h3>
+        <p>Hold <kbd>F8</kbd> and talk. Whisper runs inside the binary through ONNX Runtime, so speech never leaves the machine. Kokoro or Piper speak back. A role arbiter fuses playback state, mic activity and a self-voice fingerprint so you can interrupt the agent mid-sentence through speakers, not just headphones.</p>
+      </section>
+      <section>
+        <h3>Serve mode <span class="tag">--serve</span></h3>
+        <p>Run the engine headless on the box with the GPU and attach the workbench from another with <code>--connect</code>. HTTP plus WebSocket, token auth, optional TLS, loopback by default. A phone portal for approving diffs from the couch is designed and in the plans folder.</p>
+        <pre><code>beethoven --serve --port 7420 --auth-token $BVN_SERVE_TOKEN
+beethoven --connect ws://gpu-box:7420</code></pre>
+      </section>
+      <section>
+        <h3>Architecture that is enforced <span class="tag">ctest</span></h3>
+        <p>Four source-level gates run as ordinary tests: <code>ai/llm</code> stays transport-only, no exception is swallowed silently, voice locks keep their order, and the watchdog’s hang-breach path stays allocation-free. Each gate self-tests its own matcher first, because a gate that cannot fire is decoration.</p>
+      </section>
+      <section>
+        <h3>A workbench, not a web view <span class="tag">dear imgui</span></h3>
+        <p>Project tree, code viewer with outline and diagnostics, diff review, jobs, agent log, memory inspector, four themes, ten UI locales. It opens before an Electron app finishes loading its splash screen.</p>
+      </section>
+    </div>
 
-        <div class="footer-col">
-          <h5>Repositories</h5>
-          <ul class="footer-links">
-            <li><a href="https://github.com/anydaytv/beethoven" target="_blank" rel="noopener">anydaytv/beethoven</a></li>
-            <li><a href="https://github.com/beethovenstudios" target="_blank" rel="noopener">@beethovenstudios Org</a></li>
-            <li><a href="https://github.com/beethovenstudios/beethoven-web" target="_blank" rel="noopener">beethoven-web</a></li>
-            <li><a href="#community">Discussions</a></li>
-          </ul>
-        </div>
-      </div>
+    <div class="plates-2">
+      <figure class="plate" style="margin:0">
+        <div class="frame"><img src="assets/screens/workbench-voice.webp" width="1696" height="965" loading="lazy" alt="The workbench with the LICENSE file open and the agent log showing a voice session starting: hold F8 to dictate." /></div>
+        <figcaption><b>Plate II.</b> A voice session starting in the agent log. Push-to-talk on F8, Whisper in process.</figcaption>
+      </figure>
+      <figure class="plate" style="margin:0">
+        <div class="frame"><img src="assets/screens/workbench-code.webp" width="1397" height="816" loading="lazy" alt="The workbench with auth.h open and the agent log showing themes being loaded and saved." /></div>
+        <figcaption><b>Plate III.</b> Theme switching logged as it happens. Every line in that log is a real engine event.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
 
-      <div class="footer-bottom">
+<!-- ============================ HARDWARE ============================ -->
+<section id="hardware" class="section">
+  <div class="wrap">
+    <div class="staff" aria-hidden="true"><div class="mark"><span class="num">V.</span><span class="tempo">Instrumentation</span></div><div class="end"></div></div>
+    <div class="section-head">
+      <p class="eyebrow">Hardware</p>
+      <h2>Will it run on my box?</h2>
+      <p>Beethoven talks to any OpenAI-compatible endpoint. Ollama, llama.cpp’s server, vLLM and LM Studio all qualify. The model is your choice; the harness is what makes a small one useful. A rough guide by VRAM:</p>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>You have</th><th>Run</th><th>What to expect</th></tr></thead>
+        <tbody>
+          <tr><td class="num">CPU only</td><td>The embedded 0.5B Qwen for chat, plus a 3B–7B coder at Q4 on the CPU</td><td>Chat is instant. Composition works but is slow. Plan with <code>plan --dry-run</code> before you compose.</td></tr>
+          <tr><td class="num">8 GB</td><td>7B–8B coder at Q4 (Qwen2.5-Coder 7B, Gemma family)</td><td>Single-symbol tasks land reliably. Multi-file goals want a tight blueprint and a small generation.</td></tr>
+          <tr><td class="num">12 GB</td><td>12B–14B at Q4</td><td>The class the harness was designed around. Multi-file goals, parallel workers, compiler repair loops.</td></tr>
+          <tr><td class="num">16 GB</td><td>14B at Q6, or 20B–27B at Q4 with offload</td><td>Comfortable. The orchestrator gets noticeably better at writing blueprints that pass the structure check first time.</td></tr>
+          <tr><td class="num">24 GB+</td><td>27B–32B at Q4 (Gemma 4 31B is the author’s daily driver)</td><td>Everything on. This is the configuration the screenshots on this page were taken with.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="muted measure">An endpoint is one small file. The filename is cosmetic; <code>register</code> is the name agent profiles ask for, so you can reach the same model through two providers and let the registry pick.</p>
+    <pre><code># files/config/endpoints/ollama-local.ini
+endpoint  = http://localhost:11434/v1/chat/completions
+api_style = openai
+model     = qwen2.5-coder:14b
+register  = coder-14b</code></pre>
+    <p class="note"><b>Honest footnote.</b> The harness does not stop you pointing an endpoint at a cloud provider. The privacy claim on this page holds exactly as far as your endpoint files do.</p>
+  </div>
+</section>
+
+<!-- ============================ LIMITS ============================ -->
+<section id="limits" class="section">
+  <div class="wrap">
+    <div class="staff" aria-hidden="true"><div class="mark"><span class="num">VI.</span><span class="tempo">Adagio</span></div><div class="end"></div></div>
+    <div class="section-head">
+      <p class="eyebrow">Limits</p>
+      <h2>What it will not do.</h2>
+      <p>Projects that only list strengths are asking you to find the weaknesses yourself. Here are ours, as of Op. 0.9.</p>
+    </div>
+    <ul class="limits">
+      <li><h4>It is pre-release, and it moves.</h4><p>No downstream users yet, no backwards-compatibility promises, and the author deletes legacy code on sight. Config formats can change between commits.</p></li>
+      <li><h4>You build it from source.</h4><p>There are no binaries yet. The installer provisions a private MSYS2 toolchain on Windows, or apt packages on Debian-family Linux, then CMake does the rest. Budget a few minutes on first build.</p></li>
+      <li><h4>No macOS.</h4><p>Windows is the primary target and Linux builds in CI. Nobody has built it on a Mac.</p></li>
+      <li><h4>A 7B model will not architect your monolith.</h4><p>The harness makes small models reliable at scoped tasks. It does not make them wise. Read the blueprint before you approve it, and keep goals to a generation or two.</p></li>
+      <li><h4>Validation is only as good as the language file.</h4><p>If a language declares no checker, the engine falls back to parse errors and says so. It does not pretend to have compiled your Haskell.</p></li>
+      <li><h4>The workbench is Dear ImGui.</h4><p>It is fast and it is honest, and it is not VS Code. There is no extension marketplace, and the editor is a viewer with review tools, not a full editing surface yet.</p></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================ START ============================ -->
+<section id="start" class="section">
+  <div class="wrap">
+    <div class="staff" aria-hidden="true"><div class="mark"><span class="num">VII.</span><span class="tempo">Presto</span></div><div class="end"></div></div>
+    <div class="section-head">
+      <p class="eyebrow">Start</p>
+      <h2>Three commands.</h2>
+      <p>The installer never touches your global compilers. The toolchain lives outside the repository, so <code>git clean -xdf</code> cannot destroy it.</p>
+    </div>
+    <ol class="steps">
+      <li>
         <div>
-          &copy; 2026 Beethoven Studios. 100% Free &amp; Open Source under <a href="https://github.com/anydaytv/beethoven/blob/master/LICENSE" target="_blank" rel="noopener">Apache-2.0</a>.
+          <h4>Clone</h4>
+          <p>The engine, the workbench and the voice pipeline are one repository.</p>
+          <div class="cmd"><pre><code>git clone https://github.com/anydaytv/beethoven.git &amp;&amp; cd beethoven</code></pre><button type="button" data-copy>Copy</button></div>
         </div>
+      </li>
+      <li>
         <div>
-          Transitioning to <a href="https://github.com/beethovenstudios" target="_blank" rel="noopener">github.com/beethovenstudios</a> on Release Candidate.
+          <h4>Install the toolchain</h4>
+          <p>Windows gets a private MSYS2/MinGW64 under <code>%LOCALAPPDATA%\beethoven</code>. Linux gets its apt packages. Use <code>install.bat</code> from cmd.exe.</p>
+          <div class="cmd"><pre><code>./install.sh</code></pre><button type="button" data-copy>Copy</button></div>
         </div>
+      </li>
+      <li>
+        <div>
+          <h4>Build and run</h4>
+          <p>Builds the main executable with the <code>dev</code> preset: GUI, voice and serve mode all on.</p>
+          <div class="cmd"><pre><code>./build.sh beethoven</code></pre><button type="button" data-copy>Copy</button></div>
+        </div>
+      </li>
+    </ol>
+    <h3 style="margin-top:2.5rem">Then point it at a model and give it a goal.</h3>
+    <p class="muted measure">Have Ollama running with a coder model pulled, drop an endpoint file in <code>files/config/endpoints/</code>, and either launch the workbench with no arguments or run a goal from the shell.</p>
+    <pre><code>ollama pull qwen2.5-coder:14b
+beethoven plan "add a --json flag to the CLI and cover it in the tests" --dry-run
+beethoven compose "add a --json flag to the CLI and cover it in the tests"</code></pre>
+    <p class="muted measure"><code>plan --dry-run</code> stops after the tree call and costs one or two model calls. It is the cheap way to find out whether your model can write a blueprint that passes the structure check before you let it write code.</p>
+    <p><a class="arrow-link" href="docs.html">Read the reference and the live docs</a></p>
+  </div>
+</section>
+
+<!-- ============================ DISCUSSIONS ============================ -->
+<section id="discuss" class="section">
+  <div class="wrap">
+    <div class="staff" aria-hidden="true"><div class="mark"><span class="num">VIII.</span><span class="tempo">Coda</span></div><div class="end"></div></div>
+    <div class="section-head">
+      <p class="eyebrow">Discussions</p>
+      <h2>Bring your setup.</h2>
+      <p>Comments here are GitHub Discussions, through Giscus. Which model, which card, what worked and what did not. Sign in with GitHub to post.</p>
+    </div>
+    <div class="giscus-host" id="giscus-host"></div>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <h4>Beethoven</h4>
+        <p>Written by Arthur Aszman and released under Apache-2.0. The engine lives at <a href="https://github.com/anydaytv/beethoven">anydaytv/beethoven</a> today and moves to <a href="https://github.com/beethovenstudios">github.com/beethovenstudios</a> at release candidate.</p>
+      </div>
+      <div>
+        <h4>On this page</h4>
+        <ul>
+          <li><a href="#problem">The problem</a></li>
+          <li><a href="#split">The rule</a></li>
+          <li><a href="#see">What the model sees</a></li>
+          <li><a href="#engine">The engine</a></li>
+          <li><a href="#limits">Limits</a></li>
+          <li><a href="#start">Start</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Elsewhere</h4>
+        <ul>
+          <li><a href="docs.html">Documentation</a></li>
+          <li><a href="https://github.com/anydaytv/beethoven">Engine repository</a></li>
+          <li><a href="https://github.com/beethovenstudios/beethoven-web">This site’s repository</a></li>
+          <li><a href="https://github.com/beethovenstudios/beethoven-web/discussions">Discussions on GitHub</a></li>
+        </ul>
       </div>
     </div>
-  </footer>
+    <div class="colophon">
+      <span>© 2026 Arthur Aszman</span>
+      <span>Apache-2.0</span>
+      <span>Set in Fraunces and JetBrains Mono</span>
+      <span>Tree-sitter and the C++ grammar are MIT</span>
+      <span>No analytics, no cookies, no tracking</span>
+    </div>
+  </div>
+</footer>
 
-  <!-- Scripts -->
-  <script src="js/main.js"></script>
-  <script src="js/giscus.js"></script>
+<script src="js/site.js"></script>
+<script src="js/giscus.js"></script>
+<script type="module" src="js/slice-demo.js"></script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 {
   "name": "beethoven-web",
   "version": "0.9.0",
-  "description": "Project website and documentation portal for Beethoven — a bare-metal C++20 agentic harness for local models.",
+  "description": "Website for Beethoven, a free, open-source C++20 code studio and agentic harness for local models.",
   "main": "index.html",
   "scripts": {
     "start": "npx serve -l 3000 .",
@@ -17,7 +17,7 @@
     "github-pages",
     "giscus"
   ],
-  "author": "Beethoven Studios",
+  "author": "Arthur Aszman",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",

@@ -1,4 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Beethoven">
-  <rect x="0" y="0" width="64" height="64" rx="14" fill="#17181a"/>
-  <text x="32" y="45" text-anchor="middle" font-family="ui-monospace, 'JetBrains Mono', Consolas, monospace" font-weight="700" font-size="36" fill="#4da3ff">B</text>
+  <rect width="64" height="64" rx="12" fill="#111626"/>
+  <g stroke="#3a4360" stroke-width="1">
+    <line x1="10" y1="22" x2="54" y2="22"/><line x1="10" y1="27" x2="54" y2="27"/><line x1="10" y1="32" x2="54" y2="32"/><line x1="10" y1="37" x2="54" y2="37"/><line x1="10" y1="42" x2="54" y2="42"/>
+  </g>
+  <text x="32" y="45" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-weight="700" font-size="38" fill="#d4ad55">B</text>
 </svg>
